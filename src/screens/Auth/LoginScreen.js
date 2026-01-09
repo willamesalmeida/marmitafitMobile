@@ -25,12 +25,11 @@ export default function LoginScreen() {
   const {
     control,
     handleSubmit,
-    trigger,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
-    mode: 'onBlur',           // valida ao perder o foco
-    reValidateMode: 'onBlur', // revalida ao perder o foco novamente
+    mode: 'onChange',           // valida ao perder o foco
+    reValidateMode: 'onChange', // revalida ao perder o foco novamente
     defaultValues: { email: '', password: '' },
   });
 
@@ -87,12 +86,8 @@ export default function LoginScreen() {
                     placeholderTextColor="#9ca3af"
                     value={value}
                     onChangeText={onChange}
-                    onBlur={() => {
-                      onBlur();
-                      // se quiser forçar validação do email ao perder o foco da senha:
-                      // trigger('email');
-                    }}
-                    secureTextEntry
+                    onBlur={onBlur}
+                    secureTextEntry={true}
                   />
                 )}
               />

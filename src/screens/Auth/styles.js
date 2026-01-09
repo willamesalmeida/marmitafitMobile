@@ -10,8 +10,8 @@ export default StyleSheet.create({
   imageHeader: {
     width: '100%',
     height: height * 0.3, // ocupa cerca de 40% da tela
-    borderBottomLeftRadius: 120,
-    borderBottomRightRadius: 120,
+    borderBottomLeftRadius: 170,
+    borderBottomRightRadius: 170,
     marginBottom: 20,
   },
   content: {
