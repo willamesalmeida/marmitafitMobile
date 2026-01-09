@@ -34,3 +34,58 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+
+# Expo
+.expo/
+.expo-shared/
+__generated__/
+
+# Node modules
+node_modules/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Expo Metro bundler cache
+.metro-*
+
+# Android
+android/
+app/build/
+.gradle/
+build/
+
+# iOS
+ios/
+Pods/
+Podfile.lock
+*.xcworkspace
+*.xcodeproj/project.xcworkspace
+*.xcodeproj/xcuserdata/
+
+# MacOS
+.DS_Store
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.production
+
+# Temp files
+*.tmp
+*.bak
+
+# EAS Build artifacts (se usar EAS)
+.eas/
+
+# TypeScript cache (se usar TS no futuro)
+*.tsbuildinfo
+
+# React Native tools
+*.watchmanconfig
+.buckconfig
+.flowconfig
