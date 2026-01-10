@@ -58,11 +58,12 @@ export default function LoginScreen() {
       const result = await login(data.email, data.password);
       if (result.success) {
         setTimeout(() => {
-          Alert.alert("Sucesso", "Login realizado com sucesso!");
+          navigation.navigate("Home");
         }, 2000);
-        navigation.navigate("Home");
+        Alert.alert("Sucesso", "Login realizado com sucesso!");
       } else {
         Alert.alert("Erro", result.message || "Falha no login");
+        console.log(result)
       }
     } catch (error) {
       Alert.alert("Erro", "Ocorreu um erro inesperado");

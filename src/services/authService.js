@@ -9,7 +9,7 @@ import {
   clearTokens,
 } from "./secureStore";
 
-const API_URL = process.env.API_URL;
+const API_URL = process.env.API_URL || 'http://192.168.5.111:3333';
 
 //garante que exista um deviceId salvo no securestore
 const ensureDeviceId = async () => {
