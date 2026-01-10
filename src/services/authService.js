@@ -105,7 +105,7 @@ export const refreshToken = async (refreshTokenValue) => {
     await clearTokens();
     const message =
       error.response?.data?.message ||
-      (error.respons?.data?.details &&
+      (error.response?.data?.details &&
         error.response.data.details.join(" | ")) ||
       error.message ||
       "Refresh token error";
