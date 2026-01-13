@@ -9,7 +9,7 @@ import {
   clearTokens,
 } from "./secureStore";
 
-const API_URL = process.env.API_URL || 'http://192.168.5.111:3333';
+const API_URL = process.env.API_URL || "http://192.168.5.111:3333";
 
 //garante que exista um deviceId salvo no securestore
 const ensureDeviceId = async () => {
@@ -27,7 +27,6 @@ const ensureDeviceId = async () => {
     await setDeviceId(id);
   }
   return id;
-  
 };
 // função para fazer login: chama login, salva os tokens e retorna os dados
 export const login = async (email, password) => {
@@ -55,6 +54,22 @@ export const login = async (email, password) => {
     if (accessToken) await setAccessToken(accessToken);
     if (refreshToken) await setRefreshToken(refreshToken);
 
+    if (accessToken) {
+      await setAccessToken(accessToken);
+      console.log(
+        "✅ ACCESS TOKEN SALVO COM SUCESSO:",
+        accessToken.substring(0, 50) + "..."
+      );
+    }
+
+    if (refreshToken) {
+      await setRefreshToken(refreshToken);
+      console.log(
+        "✅ REFRESH TOKEN SALVO COM SUCESSO:",
+        refreshToken.substring(0, 50) + "..."
+      );
+    }
+
     return { success: true, data };
   } catch (error) {
     const message =
@@ -67,8 +82,6 @@ export const login = async (email, password) => {
     return { success: false, message };
   }
 };
-
-
 
 // Função chamada pelo api.js quando precisar trocar refresh -> access // IMPORTANTE: não usa a instância api para evitar import circular
 export const refreshToken = async (refreshTokenValue) => {
@@ -95,12 +108,9 @@ export const refreshToken = async (refreshTokenValue) => {
     if (newAccessToken) await setAccessToken(newAccessToken);
     if (newRefreshToken) await setRefreshToken(newRefreshToken);
 
-
-
     //retorn os tokens no formato simples para o api.js
     return { accessToken: newAccessToken, refreshToken: newRefreshToken, data };
   } catch (error) {
-
     //se o refresh falhar, limpa os token locais
     await clearTokens();
     const message =
@@ -110,15 +120,14 @@ export const refreshToken = async (refreshTokenValue) => {
       error.message ||
       "Refresh token error";
 
-//lança o erro paa a api.js tratar a fila e limpar os tokens 
+    //lança o erro paa a api.js tratar a fila e limpar os tokens
     const err = new Error(message);
     err.original = error;
     throw err;
   }
 };
 
-
-//logou: avisa pro back e limpa os tokens locais 
+//logou: avisa pro back e limpa os tokens locais
 export const logout = async (refreshTokenValue) => {
   try {
     await axios.post(
