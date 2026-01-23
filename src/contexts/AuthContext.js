@@ -1,0 +1,48 @@
+import React, { createContext, useState, useEffect, useContext, Children } from "react";
+import * as SecureStore from "../services/secureStore"
+import api from "../services/api";
+import { set } from "react-hook-form";
+
+
+//cria o contexto 
+const AuthContext = createContext({});
+
+
+//chama o provider 
+export const AuthProvider = ({Children}) => {
+  const [user, setUser] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function LoadStorageData() {
+      try {
+        const storageToken = await SecureStore.getAccessToken()
+         if(storageToken) {
+        setUser({token: storageToken}) //Marca como logado temporatiamente
+    }
+      } catch (error) {
+        console.error("Erro ao carregar dados do armazenamento", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    LoadStorageData()
+  }, [])
+
+  const logout = async () => {
+    await SecureStore.clearTokens()
+    setUser(null)
+  }
+
+return (
+<AuthContext.Provider value={{signerd: !!user, user, setUser, loading, logout}}>
+  {Children}
+</AuthContext.Provider>
+)
+}
+
+export const UseAuth = () => {
+  const context = useContext(AuthContext)
+  return context
+}

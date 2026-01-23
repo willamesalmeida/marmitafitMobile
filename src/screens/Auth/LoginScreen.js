@@ -9,7 +9,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
-  Alert,
 } from "react-native";
 import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
 import styles from "./styles";
@@ -21,6 +20,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigation } from "@react-navigation/native";
 import { login } from "../../services/authService";
 
+import Toast from "react-native-toast-message";
 
 const schema = yup.object({
   email: yup
@@ -54,27 +54,56 @@ export default function LoginScreen() {
   const onSubmit = async (data) => {
     setIsLoading(true);
     console.log("dados válidos:", data);
+
     try {
       const result = await login(data.email, data.password);
       if (result.success) {
-        setTimeout(() => {
-          navigation.navigate("Home");
-        }, 2000);
-        Alert.alert("Sucesso", "Login realizado com sucesso!");
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "Home" }],
+        });
+
+
+        Toast.show({
+          type: "success",
+          text1: "Login realizado com sucesso!",
+        });
+
+
+        // setTimeout(() => {
+        //   navigation.navigate("Home");
+        // }, 2000);
+        // Alert.alert("Sucesso", "Login realizado com sucesso!");
       } else {
-        Alert.alert("Erro", result.message || "Falha no login");
-        console.log(result)
+        Toast.show({
+          type: "success",
+          text1: "Falha no login!",
+          text2:
+            result.message || "Verifique suas credenciais e tente novamente.",
+        });
+        // Alert.alert("Erro", result.message || "Falha no login");
+        // console.log(result)
       }
     } catch (error) {
-      Alert.alert("Erro", "Ocorreu um erro inesperado");
+      
+      
+      Toast.show({
+        type: "error",
+        text1: "Ocorreu um erro inesperado!",
+      });
+
+      // Alert.alert("Erro", "Ocorreu um erro inesperado");
     } finally {
       setIsLoading(false);
     }
   };
 
   const onError = (err) => {
-    console.log("erros do form:", err);
     setIsLoading(false);
+    Toast.show({
+      type: "error",
+      text1: "Por favor, verifique os campos!",
+    });
   };
 
   return (

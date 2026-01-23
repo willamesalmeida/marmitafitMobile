@@ -1,20 +1,29 @@
 import React, { useState } from "react";
-import { View, Text, Button, ActivityIndicator, Alert } from "react-native";
+import { View, Text, Button, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import api from "../../services/api"; // ← importante: importe a instância api
 import styles from "./styles";
 
+import { clearTokens } from "../../services/secureStore";
+import { useNavigation } from "@react-navigation/native";
+import Toast from "react-native-toast-message";
+
 export default function HomeScreen() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState("");
+  const navigation = useNavigation();
 
   const testProtectedRequest = async () => {
     setLoading(true);
     setResult("");
     try {
       // Mude '/products' para qualquer rota protegida que exista no seu backend
-      const res = await api.get('/products'); // ou '/me', '/orders', etc.
-      setResult("Sucesso! Dados recebidos: " + JSON.stringify(res.data).substring(0, 200) + "...");
+      const res = await api.get("/products"); // ou '/me', '/orders', etc.
+      setResult(
+        "Sucesso! Dados recebidos: " +
+          JSON.stringify(res.data).substring(0, 200) +
+          "...",
+      );
     } catch (err) {
       setResult("Erro: " + err.message);
       console.error("Request falhou:", err);
@@ -23,18 +32,39 @@ export default function HomeScreen() {
     }
   };
 
+  const hndleLogout = async () => {
+    await clearTokens();
+    navigation.reset({ index: 0, routes: [{ name: "Login" }] });
+    Toast.show({
+      type: "success",
+      text1: "Logout realizado com sucesso!",
+    })
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.title}>Bem-vindo ao MarmitaFit!</Text>
+        <Text style={styles.title}>Bem-vindo </Text>
         <Text style={styles.subtitle}>Você está logado com sucesso! 🎉</Text>
 
-        <Button title="Testar Request Protegido" onPress={testProtectedRequest} />
+        <Button
+          title="Testar Request Protegido"
+          onPress={testProtectedRequest}
+        />
 
-        {loading && <ActivityIndicator style={{ marginTop: 20 }} size="large" color="#22c55e" />}
+        {loading && (
+          <ActivityIndicator
+            style={{ marginTop: 20 }}
+            size="large"
+            color="#22c55e"
+          />
+        )}
         {result ? <Text style={styles.result}>{result}</Text> : null}
+
+        <View style={{ marginTop: 30 }}>
+          <Button title="Logout" color="#ef4444" onPress={hndleLogout} />
+        </View>
       </View>
     </SafeAreaView>
   );
 }
-

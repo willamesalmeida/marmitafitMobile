@@ -42,45 +42,65 @@ export const login = async (email, password) => {
       {
         headers: { "Content-Type": "application/json" },
         timeout: 10000,
-      }
+      },
     );
-    //O back pode retornar { success: true, data: {accesstoken, refreshtoken, user}}
-    const payload = response.data;
-    const data = payload.success ? payload.data : payload;
 
-    const accessToken = data.accessToken || data.access_token;
-    const refreshToken = data.refreshToken || data.refresh_Token;
-
-    if (accessToken) await setAccessToken(accessToken);
-    if (refreshToken) await setRefreshToken(refreshToken);
+    const { accessToken, refreshToken, user } = response.data;
 
     if (accessToken) {
       await setAccessToken(accessToken);
-      console.log(
-        "✅ ACCESS TOKEN SALVO COM SUCESSO:",
-        accessToken.substring(0, 50) + "..."
-      );
     }
-
     if (refreshToken) {
       await setRefreshToken(refreshToken);
-      console.log(
-        "✅ REFRESH TOKEN SALVO COM SUCESSO:",
-        refreshToken.substring(0, 50) + "..."
-      );
     }
+    if (__DEV__)
+      console.log("[AuthService] login successful and Tokens saved.");
 
-    return { success: true, data };
+    return { success: true, data: { accessToken, refreshToken, user } };
   } catch (error) {
+    if (__DEV__) console.error("[AuthService] Error:", error.message);
     const message =
-      error.response?.data?.message ||
-      (error.response?.data?.details &&
-        error.response.data.details.join(" | ")) ||
-      error.message ||
-      "Login error";
-
+      error.response?.data?.message || error.message || "Login error";
     return { success: false, message };
   }
+
+  //   //O back pode retornar { success: true, data: {accesstoken, refreshtoken, user}}
+  //   const payload = response.data;
+  //   const data = payload.success ? payload.data : payload;
+
+  //   const accessToken = data.accessToken || data.access_token;
+  //   const refreshToken = data.refreshToken || data.refresh_Token;
+
+  //   if (accessToken) await setAccessToken(accessToken);
+  //   if (refreshToken) await setRefreshToken(refreshToken);
+
+  //   if (accessToken) {
+  //     await setAccessToken(accessToken);
+  //     console.log(
+  //       "✅ ACCESS TOKEN SALVO COM SUCESSO:",
+  //       accessToken.substring(0, 50) + "..."
+  //     );
+  //   }
+
+  //   if (refreshToken) {
+  //     await setRefreshToken(refreshToken);
+  //     console.log(
+  //       "✅ REFRESH TOKEN SALVO COM SUCESSO:",
+  //       refreshToken.substring(0, 50) + "..."
+  //     );
+  //   }
+
+  //   return { success: true, data };
+  // } catch (error) {
+  //   const message =
+  //     error.response?.data?.message ||
+  //     (error.response?.data?.details &&
+  //       error.response.data.details.join(" | ")) ||
+  //     error.message ||
+  //     "Login error";
+
+  //   return { success: false, message };
+  // }
 };
 
 // Função chamada pelo api.js quando precisar trocar refresh -> access // IMPORTANTE: não usa a instância api para evitar import circular
@@ -96,35 +116,46 @@ export const refreshToken = async (refreshTokenValue) => {
       {
         headers: { "Content-Type": "application/json" },
         timeout: 10000,
-      }
+      },
     );
 
-    const payload = response.data;
-    const data = payload.success ? payload.data : payload;
+    const { accessToken, refreshToken: newRefreshToken } = response.data;
 
-    const newAccessToken = data.accessToken || data.access_Token;
-    const newRefreshToken = data.refreshToken || data.refresh_Token;
-
-    if (newAccessToken) await setAccessToken(newAccessToken);
+    if (accessToken) await setAccessToken(accessToken);
     if (newRefreshToken) await setRefreshToken(newRefreshToken);
-
-    //retorn os tokens no formato simples para o api.js
-    return { accessToken: newAccessToken, refreshToken: newRefreshToken, data };
+    if (__DEV__) console.log("[AuthService] refresh successful! New access token.");
+    
+    return { accessToken, refreshToken: newRefreshToken };
   } catch (error) {
-    //se o refresh falhar, limpa os token locais
     await clearTokens();
-    const message =
-      error.response?.data?.message ||
-      (error.response?.data?.details &&
-        error.response.data.details.join(" | ")) ||
-      error.message ||
-      "Refresh token error";
-
-    //lança o erro paa a api.js tratar a fila e limpar os tokens
-    const err = new Error(message);
-    err.original = error;
-    throw err;
+    throw error;
   }
+  //   const payload = response.data;
+  //   const data = payload.success ? payload.data : payload;
+
+  //   const newAccessToken = data.accessToken || data.access_Token;
+  //   const newRefreshToken = data.refreshToken || data.refresh_Token;
+
+  //   if (newAccessToken) await setAccessToken(newAccessToken);
+  //   if (newRefreshToken) await setRefreshToken(newRefreshToken);
+
+  //   //retorn os tokens no formato simples para o api.js
+  //   return { accessToken: newAccessToken, refreshToken: newRefreshToken, data };
+  // } catch (error) {
+  //   //se o refresh falhar, limpa os token locais
+  //   await clearTokens();
+  //   const message =
+  //     error.response?.data?.message ||
+  //     (error.response?.data?.details &&
+  //       error.response.data.details.join(" | ")) ||
+  //     error.message ||
+  //     "Refresh token error";
+
+  //   //lança o erro paa a api.js tratar a fila e limpar os tokens
+  //   const err = new Error(message);
+  //   err.original = error;
+  //   throw err;
+  // }
 };
 
 //logou: avisa pro back e limpa os tokens locais
@@ -133,7 +164,7 @@ export const logout = async (refreshTokenValue) => {
     await axios.post(
       `${API_URL}/logout`,
       { refreshToken: refreshTokenValue },
-      { headers: { "Content-Type": "application/json" }, timeout: 10000 }
+      { headers: { "Content-Type": "application/json" }, timeout: 10000 },
     );
   } catch (e) {
     // ignoramos erros do servidor no logout, mas sempre limpamos localmente

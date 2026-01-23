@@ -10,7 +10,7 @@ import {
 } from "./secureStore";
 import { refreshToken as refreshTokenService } from "./authService";
 
-const API_URL = process.env.API_URL || "http://192.168.0.100:3333"; // <-- ajuste para o IP do seu backend
+const API_URL = process.env.API_URL || "http://192.168.5.111:3333"; // <-- ajuste para o IP do seu backend
 
 const api = axios.create({
   baseURL: API_URL,
@@ -38,7 +38,7 @@ api.interceptors.request.use(
     }
     return config;
   },
-  (err) => Promise.reject(err)
+  (err) => Promise.reject(err),
 );
 
 // fila para evitar múltiplos refresh simultâneos
@@ -54,6 +54,7 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
+
     if (!originalRequest) return Promise.reject(error);
 
     const status = error.response?.status;
@@ -68,6 +69,7 @@ api.interceptors.response.use(
 
     if (status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
+      console.log(" refresh token usado");
 
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
@@ -77,57 +79,47 @@ api.interceptors.response.use(
             originalRequest.headers.Authorization = `Bearer ${token}`;
             return api(originalRequest);
           })
-          .catch((err) => {
-            return Promise.reject(err);
-          });
+          .catch((err) => Promise.reject(err));
       }
-
+      originalRequest._retry = true;
       isRefreshing = true;
 
       try {
         const refresh = await getRefreshToken();
-        if (!refresh) {
-          throw Object.assign(new Error("No refresh token available"), {
-            code: "NO_REFRESH_TOKEN",
-          });
-        }
+        if (!refresh) throw new Error("no refresh token available");
 
-        if (__DEV__) console.log("tentando refresh token");
+        if (__DEV__) console.log("[API] Tentando Refresh...");
 
-        // chama authService.refreshToken que deve retornar { accessToken, refreshToken }
         const r = await refreshTokenService(refresh);
-        const newAccessToken = r.accessToken || r.data?.accessToken;
-        const newRefreshToken = r.refreshToken || r.data?.refreshToken;
-
-        if (!newAccessToken) {
-          throw Object.assign(new Error("No new access token received"))
-        }
-
-        if(__DEV__) console.log("refresh sucesso! Novo access token");
+        const newAccessToken = r.accessToken;
+        const newRefreshToken = r.refreshToken;
 
         await setAccessToken(newAccessToken);
         if (newRefreshToken) await setRefreshToken(newRefreshToken);
 
+        if (__DEV__)
+          console.log("[API] Refresh successful! New access token obtained.");
+
         processQueue(null, newAccessToken);
-        
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+
         return api(originalRequest);
+
       } catch (err) {
-        if(__DEV__)console.error("Refresh falhou", err.message);
+        if (__DEV__) console.error("[API] Refresh failed", err.message);
         processQueue(err, null);
-
         await clearTokens();
+       
+        return Promise.reject(err);
 
-        // Alert.alert("Sessão expirada", "Por favor, faça login novamente");
-
-        return Promise.reject(Object.assign(err,{code: err.code || "REFRESH_FAILED"}));
       } finally {
+
         isRefreshing = false;
       }
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;

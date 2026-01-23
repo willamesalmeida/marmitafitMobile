@@ -1,84 +1,89 @@
-import { useEffect, useCallback, useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as SplashScreen from "expo-splash-screen";
-
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import Toast, { BaseToast } from "react-native-toast-message";
 
+// Importe seu Provider e o Hook
+import { AuthProvider, useAuth } from "./src/contexts/AuthContext";
 
-//importe das telas
+// Telas
 import LoginScreen from "./src/screens/Auth/LoginScreen";
 import HomeScreen from "./src/screens/Home/HomeScreen";
 import RegisterScreen from "./src/screens/Auth/RegisterScreen";
 import ForgotPasswordScreen from "./src/screens/Auth/ForgotPasswordScreen";
 
-import { getAccessToken } from "./src/services/secureStore";
-SplashScreen.preventAutoHideAsync().catch(console.warn)
-
 const Stack = createNativeStackNavigator();
 
-export default function App() {
+// 1. Configuração do Toast (Mantive a sua)
+const toastConfig = {
+  success: (props) => (
+    <BaseToast
+      {...props}
+      style={{ minHeight: 80, width: "90%", marginTop: "230%", borderLeftColor: "#22c55e", alignSelf: "center" }}
+      text1Style={{ fontSize: 18 }}
+      text1={props.text1}
+    />
+  ),
+  error: (props) => (
+    <BaseToast
+      {...props}
+      style={{ minHeight: 80, width: "90%", marginTop: "230%", borderLeftColor: "#ef4444", alignSelf: "center" }}
+      text1Style={{ fontSize: 18 }}
+      text1={props.text1}
+    />
+  ),
+};
 
-  const [ appIsReady, setAppIsReady] = useState(false)
-  const [ initialRoute, setInitialRoute] = useState("Login")
+SplashScreen.preventAutoHideAsync().catch(console.warn);
 
-  useEffect(() => {
-  async function prepare() {
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      
-      const token = await getAccessToken()
-      if(token){
-        setInitialRoute("Home")
-        console.log("Auto lgin check", token ? "token encontrado --> vai pra home" : "sem tokne --> login")
-      }else{
-        console.log("Sem token --> vai para a login")
-      }
-    } catch (e) {
-      console.warn("Erro na splash", e);
-    } finally{
-      setAppIsReady(true)
-      await SplashScreen.hideAsync()
-    }
-  }
+// 2. COMPONENTE DE NAVEGAÇÃO (Onde o 'signed' é implementado)
+function Navigation() {
+  const { signed, loading } = useAuth(); // Aqui pegamos o estado global
 
-  prepare();
-}, []);
-
-/* const onLayoutRootView = useCallback(async() => {
-  if(appIsReady) {
-    await SplashScreen.hideAsync()
-  }
-}, [appIsReady]) */
-
-if(!appIsReady){
-  return null
-}
+  // Enquanto o context verifica o token no secureStore, não mostramos nada
+  if (loading) return null; 
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName={initialRoute}>
-        <Stack.Screen
-          name="Login"
-          component={LoginScreen}
-          options={{ headerShown: false, title: 'Login' }}
-        />
-        <Stack.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{ headerShown: true, title: "Início" }}
-        />
-        <Stack.Screen
-          name="Register"
-          component={RegisterScreen}
-          options={{ headerShown: true, title: "Cadastro" }}
-        />
-        <Stack.Screen
-          name="ForgotPassword"
-          component={ForgotPasswordScreen}
-          options={{ headerShown: true, title: "Recuperar Senha" }}
-        />
+      <Stack.Navigator>
+        {signed ? (
+          // --- ROTAS PARA USUÁRIOS LOGADOS ---
+          <Stack.Group>
+            <Stack.Screen
+              name="Home"
+              component={HomeScreen}
+              options={{ headerShown: true, title: "Início" }}
+            />
+          </Stack.Group>
+        ) : (
+          // --- ROTAS PARA USUÁRIOS NÃO LOGADOS ---
+          <Stack.Group screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen 
+              name="Register" 
+              component={RegisterScreen} 
+              options={{ headerShown: true, title: "Cadastro" }}
+            />
+            <Stack.Screen 
+              name="ForgotPassword" 
+              component={ForgotPasswordScreen} 
+              options={{ headerShown: true, title: "Recuperar Senha" }}
+            />
+          </Stack.Group>
+        )}
       </Stack.Navigator>
+      <Toast config={toastConfig} />
     </NavigationContainer>
+  );
+}
+
+// 3. EXPORT PRINCIPAL
+export default function App() {
+  // O AuthProvider DEVE envolver quem usa o useAuth (no caso, o componente Navigation)
+  return (
+    <AuthProvider>
+      <Navigation />
+    </AuthProvider>
   );
 }
