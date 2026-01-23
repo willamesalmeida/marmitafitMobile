@@ -1,8 +1,5 @@
-import React, { createContext, useState, useEffect, useContext, Children } from "react";
+import React, { createContext, useState, useEffect, useContext } from "react";
 import * as SecureStore from "../services/secureStore"
-import api from "../services/api";
-import { set } from "react-hook-form";
-
 
 //cria o contexto 
 const AuthContext = createContext({});
