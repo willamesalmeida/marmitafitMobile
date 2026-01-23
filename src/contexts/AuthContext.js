@@ -9,7 +9,7 @@ const AuthContext = createContext({});
 
 
 //chama o provider 
-export const AuthProvider = ({Children}) => {
+export const AuthProvider = ({children}) => {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
 
@@ -36,13 +36,13 @@ export const AuthProvider = ({Children}) => {
   }
 
 return (
-<AuthContext.Provider value={{signerd: !!user, user, setUser, loading, logout}}>
+<AuthContext.Provider value={{signed: !!user, user, setUser, loading, logout}}>
   {Children}
 </AuthContext.Provider>
 )
 }
 
-export const UseAuth = () => {
+export const useAuth = () => {
   const context = useContext(AuthContext)
   return context
 }

@@ -4,14 +4,12 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import api from "../../services/api"; // ← importante: importe a instância api
 import styles from "./styles";
 
-import { clearTokens } from "../../services/secureStore";
-import { useNavigation } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
 
 export default function HomeScreen() {
+  const { logout } = useAuth();
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState("");
-  const navigation = useNavigation();
 
   const testProtectedRequest = async () => {
     setLoading(true);
@@ -33,12 +31,12 @@ export default function HomeScreen() {
   };
 
   const hndleLogout = async () => {
-    await clearTokens();
-    navigation.reset({ index: 0, routes: [{ name: "Login" }] });
+    await logout();
+    
     Toast.show({
       type: "success",
       text1: "Logout realizado com sucesso!",
-    })
+    });
   };
 
   return (

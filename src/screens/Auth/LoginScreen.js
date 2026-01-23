@@ -35,6 +35,7 @@ const schema = yup.object({
 });
 
 export default function LoginScreen() {
+  const { setUser } = useAuth();
   const navigation = useNavigation();
 
   const [showPassword, setShowPassword] = useState(false);
@@ -58,17 +59,18 @@ export default function LoginScreen() {
     try {
       const result = await login(data.email, data.password);
       if (result.success) {
-        navigation.reset({
-          index: 0,
-          routes: [{ name: "Home" }],
-        });
+        setUser(result.data.user || { token: result.data.accessToken });
 
+        //antees do contexto era como navegava pra a proxima tela
+        // navigation.reset({
+        //   index: 0,
+        //   routes: [{ name: "Home" }],
+        // });
 
         Toast.show({
           type: "success",
           text1: "Login realizado com sucesso!",
         });
-
 
         // setTimeout(() => {
         //   navigation.navigate("Home");
@@ -85,8 +87,6 @@ export default function LoginScreen() {
         // console.log(result)
       }
     } catch (error) {
-      
-      
       Toast.show({
         type: "error",
         text1: "Ocorreu um erro inesperado!",
