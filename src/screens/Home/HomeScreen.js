@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { View, Text, Button, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import api from "../../services/api"; // ← importante: importe a instância api
+
+import { useAuth } from "../../contexts/AuthContext";
 import styles from "./styles";
 
 import Toast from "react-native-toast-message";

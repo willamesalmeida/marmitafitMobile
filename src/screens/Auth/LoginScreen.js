@@ -19,7 +19,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 
 import { useNavigation } from "@react-navigation/native";
 import { login } from "../../services/authService";
-
+import { useAuth } from "../../contexts/AuthContext";
 import Toast from "react-native-toast-message";
 
 const schema = yup.object({
