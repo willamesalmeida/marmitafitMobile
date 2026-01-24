@@ -32,7 +32,7 @@ export default function HomeScreen() {
     }
   };
 
-  const hndleLogout = async () => {
+  const handleLogout = async () => {
     await logout();
     
     Toast.show({
@@ -62,7 +62,7 @@ export default function HomeScreen() {
         {result ? <Text style={styles.result}>{result}</Text> : null}
 
         <View style={{ marginTop: 30 }}>
-          <Button title="Logout" color="#ef4444" onPress={hndleLogout} />
+          <Button title="Logout" color="#ef4444" onPress={handleLogout} />
         </View>
       </View>
     </SafeAreaView>

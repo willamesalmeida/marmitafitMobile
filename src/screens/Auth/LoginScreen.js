@@ -31,7 +31,7 @@ const schema = yup.object({
   password: yup
     .string()
     .required("A senha é obrigatória")
-    .min(6, "A senha deve ter pelo menos 6 caracteres"),
+    .min(6, "Minimo 6 digitos, 1 especial, 1 letra maiuscula e 1 minusculas"),
 });
 
 export default function LoginScreen() {
@@ -53,46 +53,42 @@ export default function LoginScreen() {
   });
 
   const onSubmit = async (data) => {
+    if(isLoading) return; // Previne múltiplos envios
     setIsLoading(true);
+
     console.log("dados válidos:", data);
 
     try {
       const result = await login(data.email, data.password);
-      if (result.success) {
-        setUser(result.data.user || { token: result.data.accessToken });
 
-        //antees do contexto era como navegava pra a proxima tela
-        // navigation.reset({
-        //   index: 0,
-        //   routes: [{ name: "Home" }],
-        // });
+      if (result.success) {
+        // Armazena o usuário ou token no contexto de autenticação e mudar para a home screen automaticamente
+        setUser(result.data.user || { token: result.data.accessToken });
 
         Toast.show({
           type: "success",
           text1: "Login realizado com sucesso!",
         });
-
-        // setTimeout(() => {
-        //   navigation.navigate("Home");
-        // }, 2000);
-        // Alert.alert("Sucesso", "Login realizado com sucesso!");
+        
+        // erro vindo do backend
       } else {
         Toast.show({
-          type: "success",
+          type: "error",
           text1: "Falha no login!",
           text2:
             result.message || "Verifique suas credenciais e tente novamente.",
         });
-        // Alert.alert("Erro", result.message || "Falha no login");
-        // console.log(result)
+    
       }
     } catch (error) {
+
+      // erro inesperado
       Toast.show({
         type: "error",
         text1: "Ocorreu um erro inesperado!",
       });
 
-      // Alert.alert("Erro", "Ocorreu um erro inesperado");
+
     } finally {
       setIsLoading(false);
     }
@@ -190,6 +186,7 @@ export default function LoginScreen() {
               )}
             </View>
 
+              {/* Botão de entrar */}
             <TouchableOpacity
               style={[styles.button, isLoading && styles.buttonDisabled]}
               onPress={handleSubmit(onSubmit, onError)}
@@ -197,7 +194,7 @@ export default function LoginScreen() {
               activeOpacity={0.8}
             >
               {isLoading ? (
-                <ActivityIndicator color="#ffff" size="small" />
+                <ActivityIndicator color="#fff" size="small" />
               ) : (
                 <Text style={styles.buttonText}>Entrar</Text>
               )}
