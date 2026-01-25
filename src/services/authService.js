@@ -21,6 +21,13 @@ const ensureDeviceId = async () => {
       } else {
         id = uuidv4();
       }
+
+      // Limpa caracteres que estão sujando o token
+      id = id
+        .replace(/\./g, "-") // Troca pontos por hífens
+        .replace(/\//g, "-") // Troca barras por hífens
+        .replace(/:/g, "-") // Troca dois-pontos por hífens
+        .substring(0, 100); // Limita tamanho
     } catch (error) {
       id = uuidv4();
     }
@@ -106,7 +113,20 @@ export const login = async (email, password) => {
 // Função chamada pelo api.js quando precisar trocar refresh -> access // IMPORTANTE: não usa a instância api para evitar import circular
 export const refreshToken = async (refreshTokenValue) => {
   try {
+    console.log("🔍 Refresh token VALUE:", refreshTokenValue);
+    console.log(
+      "   Contém pontos extras?:",
+      (refreshTokenValue.match(/\./g) || []).length > 2,
+    );
+
     const deviceId = await ensureDeviceId();
+
+    console.log("📤 Enviando para backend:", {
+      refreshTokenLength: refreshTokenValue.length,
+      deviceIdLength: deviceId.length,
+      deviceIdPreview: deviceId.substring(0, 50),
+    });
+
     const response = await axios.post(
       `${API_URL}/refresh`,
       {
@@ -123,8 +143,9 @@ export const refreshToken = async (refreshTokenValue) => {
 
     if (accessToken) await setAccessToken(accessToken);
     if (newRefreshToken) await setRefreshToken(newRefreshToken);
-    if (__DEV__) console.log("[AuthService] refresh successful! New access token.");
-    
+    if (__DEV__)
+      console.log("[AuthService] refresh successful! New access token.");
+
     return { accessToken, refreshToken: newRefreshToken };
   } catch (error) {
     await clearTokens();
