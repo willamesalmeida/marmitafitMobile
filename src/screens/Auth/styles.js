@@ -71,33 +71,26 @@ export default StyleSheet.create({
     fontWeight: '600',
   },
   errorText: {
-  color: '#ef4444',  // vermelho
-  fontSize: 14,
-  marginTop: 4,
-  alignSelf: 'flex-start',
-},
-inputWrapper:{
-  position: 'relative',
-},
-inputWithIcon: {
-  paddingRight: 45,
-},
-eyeIcon:{
-  position: 'absolute',
-  right: 12,
-  top: '50%',
-  transform: [{ translateY: -12}],
-  padding: 5,  
-},
-buttonDisabled: {
-  backgroundColor: '#4ade80',
-  opacity: 0.7,
-
-},
- errorText: {
-  color: '#ef4444',
-  fontSize: 14,
-  marginTop: 4,
-  alignSelf: 'flex-start',
- }
+    color: '#ef4444',
+    fontSize: 14,
+    marginTop: 4,
+    alignSelf: 'flex-start',
+  },
+  inputWrapper: {
+    position: 'relative',
+  },
+  inputWithIcon: {
+    paddingRight: 45,
+  },
+  eyeIcon: {
+    position: 'absolute',
+    right: 12,
+    top: '50%',
+    transform: [{ translateY: -12 }],
+    padding: 5,
+  },
+  buttonDisabled: {
+    backgroundColor: '#4ade80',
+    opacity: 0.7,
+  },
 });

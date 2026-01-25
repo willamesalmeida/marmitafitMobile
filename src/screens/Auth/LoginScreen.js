@@ -62,15 +62,20 @@ export default function LoginScreen() {
       const result = await login(data.email, data.password);
 
       if (result.success) {
-        // Armazena o usuário ou token no contexto de autenticação e mudar para a home screen automaticamente
-        setUser(result.data.user || { token: result.data.accessToken });
-
-        Toast.show({
-          type: "success",
-          text1: "Login realizado com sucesso!",
-        });
-        
-        // erro vindo do backend
+        const user = result.data.user;
+        if (user) {
+          setUser(user);
+          Toast.show({
+            type: "success",
+            text1: "Login realizado com sucesso!",
+          });
+        } else {
+          Toast.show({
+            type: "error",
+            text1: "Falha no login!",
+            text2: "Dados do usuário não recebidos. Tente novamente.",
+          });
+        }
       } else {
         Toast.show({
           type: "error",
@@ -81,14 +86,11 @@ export default function LoginScreen() {
     
       }
     } catch (error) {
-
-      // erro inesperado
       Toast.show({
         type: "error",
         text1: "Ocorreu um erro inesperado!",
+        text2: error?.message,
       });
-
-
     } finally {
       setIsLoading(false);
     }

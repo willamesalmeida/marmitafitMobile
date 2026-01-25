@@ -67,11 +67,21 @@ api.interceptors.response.use(
       });
     }
 
+    // Trata erros 401 (Unauthorized) - access token expirado ou inválido
     if (status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      console.log(" refresh token usado");
+
+      // Se a requisição que falhou é o próprio endpoint de refresh, não tenta refresh novamente
+      if (originalRequest.url?.includes("/refresh")) {
+        if (__DEV__) console.log("[API] Refresh endpoint failed, clearing tokens");
+        await clearTokens();
+        return Promise.reject(error);
+      }
+
+      if (__DEV__) console.log("[API] Access token expirado. Tentando refresh...");
 
       if (isRefreshing) {
+        // Se já está fazendo refresh, adiciona à fila
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         })
@@ -81,18 +91,24 @@ api.interceptors.response.use(
           })
           .catch((err) => Promise.reject(err));
       }
-      originalRequest._retry = true;
+
       isRefreshing = true;
 
       try {
         const refresh = await getRefreshToken();
-        if (!refresh) throw new Error("no refresh token available");
+        if (!refresh) {
+          throw new Error("no refresh token available");
+        }
 
         if (__DEV__) console.log("[API] Tentando Refresh...");
 
         const r = await refreshTokenService(refresh);
         const newAccessToken = r.accessToken;
         const newRefreshToken = r.refreshToken;
+
+        if (!newAccessToken) {
+          throw new Error("No access token received from refresh");
+        }
 
         await setAccessToken(newAccessToken);
         if (newRefreshToken) await setRefreshToken(newRefreshToken);
@@ -106,7 +122,18 @@ api.interceptors.response.use(
         return api(originalRequest);
 
       } catch (err) {
-        if (__DEV__) console.error("[API] Refresh failed", err.message);
+        // Se o refresh token está expirado ou inválido (400, 401, 403)
+        const refreshStatus = err.response?.status;
+        if (refreshStatus === 400 || refreshStatus === 401 || refreshStatus === 403) {
+          if (__DEV__) {
+            console.error(
+              "[API] Refresh token expirado ou inválido. Status:",
+              refreshStatus,
+            );
+          }
+        } else {
+          if (__DEV__) console.error("[API] Refresh failed:", err.message);
+        }
         
         processQueue(err, null);
         await clearTokens();
@@ -114,7 +141,6 @@ api.interceptors.response.use(
         return Promise.reject(err);
 
       } finally {
-
         isRefreshing = false;
       }
     }

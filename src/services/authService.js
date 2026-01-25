@@ -110,6 +110,13 @@ export const login = async (email, password) => {
   // }
 };
 
+
+
+
+
+
+
+
 // Função chamada pelo api.js quando precisar trocar refresh -> access // IMPORTANTE: não usa a instância api para evitar import circular
 export const refreshToken = async (refreshTokenValue) => {
   try {
