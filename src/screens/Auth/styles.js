@@ -1,14 +1,14 @@
-import { StyleSheet, Dimensions } from 'react-native';
+import { StyleSheet, Dimensions } from "react-native";
 
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get("window");
 
 export default StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
   },
   imageHeader: {
-    width: '100%',
+    width: "100%",
     height: height * 0.3, // ocupa cerca de 40% da tela
     borderBottomLeftRadius: 170,
     borderBottomRightRadius: 170,
@@ -21,15 +21,15 @@ export default StyleSheet.create({
   },
   title: {
     fontSize: 32,
-    fontWeight: 'bold',
-    color: '#1f2937', // cinza escuro
+    fontWeight: "bold",
+    color: "#1f2937", // cinza escuro
     marginBottom: 30,
     marginTop: 30,
   },
   label: {
     fontSize: 16,
-    color: '#374151',
-    fontWeight: '500',
+    color: "#374151",
+    fontWeight: "500",
     marginBottom: 8,
   },
   inputContainer: {
@@ -37,60 +37,79 @@ export default StyleSheet.create({
   },
   input: {
     borderBottomWidth: 1,
-    borderBottomColor: '#d1d5db',
+    borderBottomColor: "#d1d5db",
     paddingBottom: 12,
     fontSize: 16,
-    color: '#1f2937',
+    color: "#1f2937",
   },
   button: {
-    backgroundColor: '#22c55e', // verde bonito pro MarmitaFit
+    backgroundColor: "#22c55e", // verde bonito pro MarmitaFit
     paddingVertical: 16,
     borderRadius: 30,
     marginTop: 32,
   },
   buttonText: {
-    color: '#ffffff',
-    textAlign: 'center',
+    color: "#ffffff",
+    textAlign: "center",
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   forgotPassword: {
-    textAlign: 'center',
-    color: '#6b7280',
+    textAlign: "center",
+    color: "#6b7280",
     marginTop: 24,
     fontSize: 15,
   },
   signupText: {
-    textAlign: 'center',
-    color: '#6b7280',
+    textAlign: "center",
+    color: "#6b7280",
     marginTop: 16,
     fontSize: 15,
   },
   signupLink: {
-    color: '#22c55e',
-    fontWeight: '600',
+    color: "#22c55e",
+    fontWeight: "600",
   },
   errorText: {
-    color: '#ef4444',
+    color: "#ef4444",
     fontSize: 14,
     marginTop: 4,
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
   },
   inputWrapper: {
-    position: 'relative',
+    position: "relative",
   },
   inputWithIcon: {
     paddingRight: 45,
   },
   eyeIcon: {
-    position: 'absolute',
+    position: "absolute",
     right: 12,
-    top: '50%',
+    top: "50%",
     transform: [{ translateY: -12 }],
     padding: 5,
   },
   buttonDisabled: {
-    backgroundColor: '#4ade80',
+    backgroundColor: "#4ade80",
     opacity: 0.7,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: "#6b7280",
+    textAlign: "center",
+    marginBottom: 32,
+    lineHeight: 24,
+  },
+  contentCenter: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 32,
+  },
+  backLink: {
+    color: "#22c55e",
+    fontWeight: "600",
+    marginTop: 24,
+    textAlign: "center",
   },
 });

@@ -110,13 +110,6 @@ export const login = async (email, password) => {
   // }
 };
 
-
-
-
-
-
-
-
 // Função chamada pelo api.js quando precisar trocar refresh -> access // IMPORTANTE: não usa a instância api para evitar import circular
 export const refreshToken = async (refreshTokenValue) => {
   try {
@@ -198,5 +191,22 @@ export const logout = async (refreshTokenValue) => {
     // ignoramos erros do servidor no logout, mas sempre limpamos localmente
   } finally {
     await clearTokens();
+  }
+};
+
+export const requestPasswordReset = async (email) => {
+  try {
+    const response = await axios.post(
+      `${API_URL}/reset-password/request`,
+      { email },
+      { headers: { "Content-Type": "application/json" }, timeout: 10000 },
+    );
+    return { success: true, data: response.data };
+  } catch (error) {
+    const message =
+      error.response?.data?.message ||
+      error.message ||
+      "Error ao solicitar a recuperação de senha.";
+    return { success: false, message: message };
   }
 };
