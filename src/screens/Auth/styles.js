@@ -47,6 +47,9 @@ export default StyleSheet.create({
     paddingVertical: 16,
     borderRadius: 30,
     marginTop: 32,
+    paddingHorizontal: 32,
+    minHeight: 60,
+    justifyContent: "center",
   },
   buttonText: {
     color: "#ffffff",
