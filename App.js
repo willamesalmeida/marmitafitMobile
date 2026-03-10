@@ -68,7 +68,7 @@ function Navigation() {
             <Stack.Screen 
               name="Register" 
               component={RegisterScreen} 
-              options={{ headerShown: true, title: "Cadastro" }}
+              options={{ headerShown: false}}
             />
             <Stack.Screen 
               name="ForgotPassword" 

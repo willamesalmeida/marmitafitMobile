@@ -210,3 +210,21 @@ export const requestPasswordReset = async (email) => {
     return { success: false, message: message };
   }
 };
+
+export const register =async (name, email, password, confirmPassword) => {
+  try{
+    const response = await axios.post(
+      `${API_URL}/register`,
+      { name, email, password, confirmPassword },
+      { headers: { "Content-Type": "application/json" }, timeout: 10000 },
+    );
+    return { success: true, data: response.data };
+  }catch(error){
+    const message =
+      error.response?.data?.error ||
+      error.response?.data?.message ||
+      error.message ||
+      "Error ao criar a conta.";
+    return { success: false, message: message };
+  }
+}
