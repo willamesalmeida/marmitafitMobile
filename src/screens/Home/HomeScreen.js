@@ -236,23 +236,25 @@ export default function HomeScreen() {
       )}
 
       {/* GRID DE PRODUTOS */}
-      {loadingProducts ? (
-        renderProductsLoading()
-      ) : (
-        <FlatList
-          data={products}
-          keyExtractor={(item) => String(item.id)}
-          renderItem={renderProductCard}
-          numColumns={2}
-          // numColumns={2} divide automaticamente em 2 colunas
-          columnWrapperStyle={styles.productRow}
-          // columnWrapperStyle estiliza o container de cada linha
-          contentContainerStyle={styles.productsList}
-          showsVerticalScrollIndicator={false}
-          ListEmptyComponent={renderEmptyProducts}
-          // ListEmptyComponent aparece quando a lista está vazia
-        />
-      )}
+      <View style={{ flex: 1 }}>
+        {loadingProducts ? (
+          renderProductsLoading()
+        ) : (
+          <FlatList
+            data={products}
+            keyExtractor={(item) => String(item.id)}
+            renderItem={renderProductCard}
+            numColumns={2}
+            // numColumns={2} divide automaticamente em 2 colunas
+            columnWrapperStyle={styles.productRow}
+            // columnWrapperStyle estiliza o container de cada linha
+            contentContainerStyle={styles.productsList}
+            showsVerticalScrollIndicator={false}
+            ListEmptyComponent={renderEmptyProducts}
+            // ListEmptyComponent aparece quando a lista está vazia
+          />
+        )}
+      </View>
     </SafeAreaView>
   );
 }

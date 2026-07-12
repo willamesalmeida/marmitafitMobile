@@ -88,7 +88,7 @@ export default StyleSheet.create({
   // ─── Grid de produtos ──────────────────────────────────
   productsList: {
     paddingHorizontal: 24,
-    paddingBottom: 100,
+    paddingBottom: 24, // <-- Corrigido: de 100 para 24
   },
   productRow: {
     justifyContent: "space-between",
