@@ -10,7 +10,7 @@ import {
 } from "./secureStore";
 import { refreshToken as refreshTokenService } from "./authService";
 
-const API_URL = process.env.API_URL || "http://192.168.5.111:3333"; // <-- ajuste para o IP do seu backend
+const API_URL = process.env.API_URL || "http://192.168.3.10:3333"; // <-- ajuste para o IP do seu backend
 
 const api = axios.create({
   baseURL: API_URL,

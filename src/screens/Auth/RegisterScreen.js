@@ -102,7 +102,7 @@ export default function RegisterScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "une"}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
       >
         <ScrollView
@@ -116,7 +116,7 @@ export default function RegisterScreen() {
             resizeMode="cover"
           />
 
-          <View style={styles.content}>
+          <View style={[styles.content, {flex: 0}]}>
             <Text style={styles.title}>Criar conta</Text>
 
             {/* Nome */}

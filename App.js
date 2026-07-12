@@ -59,7 +59,7 @@ function Navigation() {
             <Stack.Screen
               name="Home"
               component={HomeScreen}
-              options={{ headerShown: true, title: "Início" }}
+              options={{ headerShown: false }}
             />
           </Stack.Group>
         ) : (

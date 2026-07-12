@@ -115,4 +115,21 @@ export default StyleSheet.create({
     marginTop: 24,
     textAlign: "center",
   },
+  searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 12,
+    marginHorizontal: 24,
+   marginTop: 8,
+   marginBottom: 16,
+   paddingHorizontal: 16,
+   height: 48,
+   backgroundColor: "#f3f4f6",
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 15,
+    color: "#1f2937",
+    marginLeft: 8,
+  }
 });
