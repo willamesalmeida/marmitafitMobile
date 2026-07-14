@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   View,
   Text,
@@ -29,6 +29,15 @@ export default function HomeScreen() {
   const [loadingCategories, setLoadingCategories] = useState(true);
   const [products, setProducts] = useState([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
+
+
+  // filtered product per text search 
+  const filteredProducts = useMemo(() => {
+    if (!search.trim()) return products; // trim() removes whitespace from both ends of a string
+    return products.filter((product) =>
+      product.name.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [search, products]);
 
   // ─── Efeitos ───────────────────────────────────────────
   useEffect(() => {
@@ -241,7 +250,7 @@ export default function HomeScreen() {
           renderProductsLoading()
         ) : (
           <FlatList
-            data={products}
+            data={filteredProducts}
             keyExtractor={(item) => String(item.id)}
             renderItem={renderProductCard}
             numColumns={2}
