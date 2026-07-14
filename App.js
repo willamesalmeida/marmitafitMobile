@@ -6,6 +6,8 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Toast, { BaseToast } from "react-native-toast-message";
 import { Ionicons } from "@expo/vector-icons";
 
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
 import { AuthProvider, useAuth } from "./src/contexts/AuthContext";
 
 import LoginScreen from "./src/screens/Auth/LoginScreen";
@@ -41,18 +43,21 @@ const toastConfig = {
 SplashScreen.preventAutoHideAsync().catch(console.warn);
 
 function BottomTabs() {
+  const insets = useSafeAreaInsets();
   return (
     <Tab.Navigator
-      screenOptions={({ route }) => ({
-        headerShown: false,
-        tabBarActiveTintColor: "#22c55e",
-        tabBarInactiveTintColor: "#9ca3af",
+    screenOptions={({ route }) => ({
+      headerShown: false,
+      tabBarActiveTintColor: "#22c55e",
+      tabBarInactiveTintColor: "#9ca3af",
+      sceneStyle:{ backgroundColor: "red" },
         tabBarStyle: {
           backgroundColor: "#ffffff",
           borderTopColor: "#e5e7eb",
           borderTopWidth: 0.5,
-          height: 80,
-          paddingBottom: 24,
+
+          height: 60 + insets.bottom,
+          paddingBottom: Math.max(insets.bottom, 8), 
           paddingTop: 8,
         },
         tabBarLabelStyle: {

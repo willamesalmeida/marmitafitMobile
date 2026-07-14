@@ -5,12 +5,12 @@ import styles from "./styles";
 
 
 export default function CartScreen() {
-  return (
+ return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+      <View style={styles.content}>
         <Text style={styles.title}>Carrinho</Text>
         <Text style={styles.subtitle}>Em breve...</Text>
       </View>
     </SafeAreaView>
-  )
+  );
 }

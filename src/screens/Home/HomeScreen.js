@@ -261,6 +261,7 @@ export default function HomeScreen() {
             showsVerticalScrollIndicator={false}
             ListEmptyComponent={renderEmptyProducts}
             // ListEmptyComponent aparece quando a lista está vazia
+            styles={{ backgroundColor: "red" }}
           />
         )}
       </View>
