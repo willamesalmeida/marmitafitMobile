@@ -17,6 +17,7 @@ import HomeScreen from "./src/screens/Home/HomeScreen";
 import CartScreen from "./src/screens/Cart/CartScreen";
 import OrdersScreen from "./src/screens/Orders/OrdersScreen";
 import ProfileScreen from "./src/screens/Profile/ProfileScreen";
+import ProductDetailScreen from "./src/screens/Product/ProductDetailScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -41,6 +42,15 @@ const toastConfig = {
 };
 
 SplashScreen.preventAutoHideAsync().catch(console.warn);
+
+function HomeStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="HomeScreen" component={HomeScreen} />
+      <Stack.Screen name="ProductDetail" component={ProductDetailScreen} />
+    </Stack.Navigator>
+  )
+}
 
 function BottomTabs() {
   const insets = useSafeAreaInsets();
@@ -81,7 +91,7 @@ function BottomTabs() {
     >
       <Tab.Screen
         name="Home"
-        component={HomeScreen}
+        component={HomeStack}
         options={{ tabBarLabel: "Início" }}
       />
       <Tab.Screen

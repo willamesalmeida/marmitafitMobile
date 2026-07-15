@@ -12,8 +12,10 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../../contexts/AuthContext";
+import { useNavigation } from "@react-navigation/native";
 import api from "../../services/api";
 import styles from "./styles";
+
 
 const { width } = Dimensions.get("window");
 // largura do card = metade da tela menos padding e gap
@@ -21,6 +23,8 @@ const CARD_WIDTH = (width - 48 - 12) / 2;
 
 export default function HomeScreen() {
   const { user, logout } = useAuth();
+
+  const navigation = useNavigation();
 
   // ─── Estados ───────────────────────────────────────────
   const [search, setSearch] = useState("");
@@ -134,7 +138,7 @@ export default function HomeScreen() {
           // aplica marginTop só nos cards da coluna direita
         ]}
         activeOpacity={0.8}
-        onPress={() => {}}
+        onPress={() => navigation.navigate("ProductDetail", { product: item })}
         // futuramente vai navegar para a tela de detalhe
       >
         {/* Imagem do produto */}
@@ -261,7 +265,6 @@ export default function HomeScreen() {
             showsVerticalScrollIndicator={false}
             ListEmptyComponent={renderEmptyProducts}
             // ListEmptyComponent aparece quando a lista está vazia
-            styles={{ backgroundColor: "red" }}
           />
         )}
       </View>
