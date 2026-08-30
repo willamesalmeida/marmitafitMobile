@@ -61,13 +61,13 @@ export default StyleSheet.create({
   },
   productName: {
     flex: 1,
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: "700",
     color: "#1f2937",
     lineHeight: 28,
   },
   productPrice: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "700",
     color: "#22c55e",
     whiteSpace: "nowrap",
@@ -78,13 +78,13 @@ export default StyleSheet.create({
     marginBottom: 16,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: "600",
     color: "#1f2937",
     marginBottom: 8,
   },
   description: {
-    fontSize: 17,
+    fontSize: 15,
     color: "#6b7280",
     lineHeight: 22,
   },
@@ -110,5 +110,41 @@ export default StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     color: "#ffffff",
+  },
+  // ─── Quantidade ───────────────────────────────────────────
+  quantityContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddinghorizontal: 24,
+    paddingVertical: 16,
+    // marginBottom: 10,
+  },
+  quantityLabel: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#1f2937",
+  },
+
+  quantitySelector: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 16,
+  },
+  quantityButton: {
+    width: 25,
+    height: 30,
+    borderRadius: 18,
+    borderWidth: 1.5,
+    borderColor: "#22c55e",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  quantityText: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#1f2937",
+    minWidth: 24,
+    textAlign: "center",
   },
 });
