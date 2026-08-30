@@ -147,4 +147,7 @@ export default StyleSheet.create({
     minWidth: 24,
     textAlign: "center",
   },
+  addToCartButtonDisabled: {
+    opacity: 0.7,
+  },
 });
